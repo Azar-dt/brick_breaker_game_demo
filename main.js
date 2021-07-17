@@ -21,7 +21,7 @@ const brick = {
     height : 20,
     offSetLeft : 40,
     offSetTop : 30,
-    marginTop : 15,
+    marginTop : 30,
     color : '#4d4e52'
 }
 
@@ -34,7 +34,9 @@ class BRICK {
     constructor (x,y) { 
         this.x = x; 
         this.y = y; 
+        this.weight = Math.floor(Math.random() * (LEVEl*LEVEl) + 2); 
         this.status = true; 
+        this.color = brick.color; 
     }
 
     update() { 
@@ -46,24 +48,33 @@ class BRICK {
         ) { 
             ball.dx =  ball.dx; 
             ball.dy = - ball.dy; 
+            this.weight -- ; 
             for (let i=0; i < Math.min(LEVEl + 2, 4) ; i++) { 
                 collisionParticles.push(new Particle(this.x + brick.width/2, this.y + brick.height/2,10, ball.color)); 
             }
+            this.color = ball.color; 
             ball.color = 'hsl('+hue+',100%,50%)'; 
-            this.status = false; 
+            if (this.weight == 0) this.status = false; 
             SCORE += 10; 
             //console.log(ctx.lineWidth); 
-        }
+        } 
+        // else { 
+        //     this.color = brick.color; 
+        // }
     }
 
     draw() { 
-        ctx.fillStyle = brick.color; 
+        ctx.fillStyle = this.color; 
         ctx.fillRect(this.x, this.y, brick.width, brick.height); 
     
         ctx.lineWidth = 3; 
 
-        ctx.strokeStyle = '#fccf03' ;
+        ctx.strokeStyle = '#a9d6db' ;
         ctx.strokeRect(this.x, this.y, brick.width, brick.height); 
+
+        ctx.fillStyle = '#000'; 
+        ctx.font = "13px Arial"; 
+        ctx.fillText(this.weight, this.x + brick.width/2 - 4, this.y + brick.height/2 +4); 
     }   
 }
 
@@ -385,9 +396,9 @@ function handleCollision() {
 function showStats() { 
     ctx.fillStyle = '#fff'; 
     ctx.font = "13px Arial"; 
-    ctx.fillText('LIFE : ' + LIFE, 10, 20); 
-    ctx.fillText('LEVEL : ' + LEVEl, canvas.width/2 - 20, 20);
-    ctx.fillText('SCORE : ' + SCORE, canvas.width - 90, 20);
+    ctx.fillText('LIFE : ' + LIFE, 20, 20); 
+    ctx.fillText('LEVEL : ' + LEVEl, canvas.width/2 - 30, 20);
+    ctx.fillText('SCORE : ' + SCORE, canvas.width - 100, 20);
 }
 
 
