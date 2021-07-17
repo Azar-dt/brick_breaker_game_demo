@@ -21,7 +21,7 @@ const brick = {
     height : 20,
     offSetLeft : 40,
     offSetTop : 30,
-    marginTop : 40,
+    marginTop : 15,
     color : '#4d4e52'
 }
 
@@ -46,7 +46,7 @@ class BRICK {
         ) { 
             ball.dx =  ball.dx; 
             ball.dy = - ball.dy; 
-            for (let i=0; i < Math.min(LEVEl + 3, 6) ; i++) { 
+            for (let i=0; i < Math.min(LEVEl + 2, 4) ; i++) { 
                 collisionParticles.push(new Particle(this.x + brick.width/2, this.y + brick.height/2,10, ball.color)); 
             }
             ball.color = 'hsl('+hue+',100%,50%)'; 
@@ -127,8 +127,8 @@ class PADDLE {
         this.y = y; 
         this.height = 10; 
         this.width = 70; 
-        this.dx = 10; 
-        this.dy = 10; 
+        this.dx = 15; 
+        this.dy = 15; 
     }
     
     moveRight () { 
@@ -206,6 +206,32 @@ function checkKey(e) {
     }
 
 }
+
+// get click position
+const mouse = { 
+    x:undefined, 
+    y:undefined
+}
+
+// window.addEventListener('click',function(event) { 
+//     mouse.x = event.x; 
+//     mouse.y = event.y; 
+// })
+
+
+canvas.addEventListener("mousemove", function(e) { 
+    var cRect = canvas.getBoundingClientRect();              // Gets the CSS positions along with width/height
+    var canvasX = Math.round(e.clientX - cRect.left);        // Subtract the 'left' of the canvas from the X/Y
+    var canvasY = Math.round(e.clientY - cRect.top);         // positions to get make (0,0) the top left of the 
+    paddle.x = canvasX - paddle.width/2; 
+    paddle.y = canvasY - paddle.height/2; 
+    // if (paddle.x + paddle.width  > canvas.width ) paddle.x = canvas.width - paddle.width; 
+    // if (paddle.x < 0) paddle.x = 0; 
+    if (paddle.y + paddle.height > canvas.height) paddle.y = canvas.height - paddle.height; 
+    if (paddle.y < 0) paddle.y = 0; 
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);        // canvas
+    // ctx.fillText("X: "+canvasX+", Y: "+canvasY, 10, 20);
+});
 
 
 class BALL { 
@@ -301,8 +327,8 @@ class Particle {
         this.color = color; 
         this.weight = Math.random() * 4 + 1; 
         this.directionX = Math.random() * 5 - 1.5; 
-        this.speedX = 0.7 * ( Math.random() * 2 - 1 ); 
-        this.speedY = -0.7 * ( Math.random() * 1 - 0 ); 
+        this.speedX = 4 * ( Math.random() * 2 - 1 ); 
+        this.speedY = -4* ( Math.random() * 1 - 0 ); 
         // this.speedX = Math.random() * 3 - 1.5; 
         // this.speedY = (Math.random() * this.speedX-1) - this.speedX; 
     }
@@ -359,9 +385,9 @@ function handleCollision() {
 function showStats() { 
     ctx.fillStyle = '#fff'; 
     ctx.font = "13px Arial"; 
-    ctx.fillText('LIFE : ' + LIFE, 10, 30); 
-    ctx.fillText('LEVEL : ' + LEVEl, canvas.width/2 - 20, 30);
-    ctx.fillText('SCORE : ' + SCORE, canvas.width - 90, 30);
+    ctx.fillText('LIFE : ' + LIFE, 10, 20); 
+    ctx.fillText('LEVEL : ' + LEVEl, canvas.width/2 - 20, 20);
+    ctx.fillText('SCORE : ' + SCORE, canvas.width - 90, 20);
 }
 
 

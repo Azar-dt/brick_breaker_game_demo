@@ -15,6 +15,9 @@
         }
         body { 
             display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            align-items: center;
             
         }
 
@@ -23,27 +26,14 @@
         }
 
         #canvas1 { 
-            position: absolute;
-            top: 0; 
-            left: 50%;
-            transform: translateX(-50%);
-            margin: auto;
-            margin-top: 35px;
+            margin-top: 10px;
             background-color: black;
+            cursor: none;
         }
 
         #footer { 
-            position: absolute;
-            /* background-color: rgb(202, 247, 173); */
-            /* height: 100%; */
+           
             padding-top: 8px;
-            width: 100%;
-            bottom: 0; 
-            left: 50%;
-            transform: translateX(-50%); 
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
             font-size: 16px;
             line-height: 1.5;
         }
@@ -63,14 +53,9 @@
         .game_stats{ 
             display: flex;
             flex-direction: row;
-            /* align-items: flex-start; */
-            position: absolute; 
+            margin-top: 10px;
             flex-grow: 1;
             padding: 0 16px;
-            top: 5px; 
-            left: 50%;
-            /* margin-left: 50%; */
-            transform: translateX(-50%);
             
         }
 
@@ -90,21 +75,23 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas1" width = "400", height= "500">
-    </canvas>
     <div class="game_stats">
         <input id="name1" type="text" placeholder="Name">
         <select id="game_level" >
             <option disabled selected value="0">
                 --Choose Difficulty--
             </option>
-            <option value="2">Easy</option>
-            <option value="5">Medium</option>
-            <option value="7">Hard</option>
-            <option value="10">Insane</option>
+            <option value="4">Easy</option>
+            <option value="7">Medium</option>
+            <option value="10">Hard</option>
+            <option value="15">Insane</option>
             
         </select>
         <button id="btn">Start</button>
+    </div>
+
+    <div>
+         <canvas id="canvas1" width = "400", height= "500"></canvas>
     </div>
 
     <div id="footer">
