@@ -5,10 +5,15 @@ const ctx = canvas.getContext('2d');
 // canvas.height = window.innerHeight; 
 // canvas.width = window.innerWidth;
 
+const defaulLife = 10; 
 
-let LIFE = 10; 
+
+let NAME ; 
+
+let LIFE = defaulLife; 
 let LEVEl = 1; 
-
+let SCORE = 0; 
+// let BALL_SPEED = document.getElementById('game_level').value; 
 const brick = { 
     row : 1,
     column : 4,
@@ -46,7 +51,8 @@ class BRICK {
             }
             ball.color = 'hsl('+hue+',100%,50%)'; 
             this.status = false; 
-            console.log(ctx.lineWidth); 
+            SCORE += 10; 
+            //console.log(ctx.lineWidth); 
         }
     }
 
@@ -93,17 +99,25 @@ function handleBricks() {
             }
         }
     }
-    if (next_level) { 
+    if (next_level ) { 
+        // console.log(bricks); 
         LEVEl++; 
-        for (let i=0; i<collisionParticles.length;i++) { 
-            collisionParticles.splice(i,1);
-            i--; 
-        }
+        clearSmallBall(); 
         brick.row ++; 
-        ball.speed += 1; 
+        ball.speed = eval(ball.speed + '+1'); 
+        console.log(ball.speed); 
         createBricks(); 
         paddle.reset(); 
         ball.reset(); 
+        console.log(ball); 
+    }
+}
+
+//
+function clearSmallBall() { 
+    for (let i=0; i<collisionParticles.length;i++) { 
+        collisionParticles.splice(i,1);
+        i--; 
     }
 }
 
@@ -206,31 +220,9 @@ class BALL {
     }
 
     update() { 
-        // collison with screen 
-        if (
-            this.x + this.size >= canvas.width||
-            this.x - this.size <= 0
-            ) { 
-            this.dx= - this.dx; 
-            for (let i=0; i<5; i++) { 
-                collisionParticles.push(new Particle(this.x , this.y ,10, this.color)); 
-            }
-            this.color = 'hsl('+hue+',100%,50%)'; 
-        }
-        if (
-            this.y - this.size <= 0
-            ) { 
-            this.dy = - this.dy; 
-            // this.color = 'hsl('+hue+',100%,50%)'; 
-        }
 
-        if (this.y + this.dy > canvas.height - this.size) { 
-            //   alert("Game Over"); 
-            LIFE --; 
-            this.reset(); 
-        }
-        // collison with paddle 
-        if (
+         // collison with paddle 
+         if (
             // this.dy > 0 &&
             // this.x >= paddle.x &&
             // this.x <= paddle.x + paddle.width &&
@@ -250,13 +242,38 @@ class BALL {
             this.dy = - this.speed * Math.cos(angle); 
             this.color = 'hsl('+hue+',100%,50%)'; 
         } 
+
+        // collison with screen 
+        if (
+            this.x + this.size > canvas.width||
+            this.x - this.size < 0
+            ) { 
+            this.dx= - this.dx; 
+            for (let i=0; i<5; i++) { 
+                collisionParticles.push(new Particle(this.x , this.y ,10, this.color)); 
+            }
+            this.color = 'hsl('+hue+',100%,50%)'; 
+        }
+        if (
+            this.y - this.size <= 0
+            ) { 
+            this.dy = - this.dy; 
+            this.color = 'hsl('+hue+',100%,50%)'; 
+        }
+
+        if (this.y + this.dy > canvas.height - this.size) { 
+            //   alert("Game Over"); 
+            LIFE --; 
+            this.reset(); 
+        }
+       
       
         this.x += this.dx ; 
         this.y += this.dy ; 
     }
 
     reset() { 
-        ball = new BALL(paddle.x + paddle.width/2 + 10, paddle.y, ball.speed); 
+        ball = new BALL(paddle.x + paddle.width/2 + 15 , paddle.y, ball.speed); 
     }
 
     draw() { 
@@ -268,9 +285,8 @@ class BALL {
     }
 }
 
-
-
 let ball = new BALL(paddle.x + paddle.width/2,paddle.y,4); 
+
 
 
 // add them cho vui 
@@ -343,16 +359,40 @@ function handleCollision() {
 function showStats() { 
     ctx.fillStyle = '#fff'; 
     ctx.font = "10px Arial"; 
-    ctx.fillText('LIFE LEFT : ' + LIFE, canvas.width - 100, 30); 
-    ctx.fillText('LEVEL : ' + LEVEl, 20, 30);
+    ctx.fillText('LIFE REMAIN : ' + LIFE, 20, 30); 
+    ctx.fillText('LEVEL : ' + LEVEl, canvas.width/2 - 15, 30);
+    ctx.fillText('SCORE : ' + SCORE, canvas.width - 80, 30);
 }
 
 
 const Bg_img = new Image(); 
-Bg_img.src = 'https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/v462-n-130-textureidea_1.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=9465282a2b0a375f4f5b120d7bbad882'; 
+Bg_img.src = './wall_background.jpg'; 
+
 function drawBackground() { 
     ctx.drawImage(Bg_img,0,0);
 }
+
+function createNewGame() { 
+    LEVEl = 1; 
+    brick.row = 1; 
+    LIFE = defaulLife; 
+    SCORE = 0; 
+    let BALL_SPEED = document.getElementById('game_level').value; 
+    // console.log(BALL_SPEED); 
+    paddle = new PADDLE(canvas.width/2 - 35, canvas.height-10-10); 
+    ball = new BALL(paddle.x + paddle.width/2,paddle.y,BALL_SPEED); 
+    drawBackground(); 
+    clearSmallBall(); 
+    createBricks(); 
+    ball.draw(); 
+
+    paddle.draw(); 
+    showStats();  
+}
+
+// createNewGame(); 
+
+let loop ;  
 
 function animate() { 
     //ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -368,7 +408,26 @@ function animate() {
     handleCollision(); 
     showStats();  
     hue+=0.8; 
-    if (LIFE > 0) requestAnimationFrame(animate);  
+    if (LIFE > 0) { 
+         
+        loop = requestAnimationFrame(animate); 
+        //requestAnimationFrame(animate);  
+    } else {
+        let temp = document.getElementById('name1').value;
+        NAME = temp.toUpperCase(); 
+        console.log(NAME); 
+        let alertmsg = "      😵GAME OVER !!!😵\n" 
+        + "️🎉 YOUR SCORE WAS " + SCORE  
+        + " 🌟\n GOOD LUCK NEXT TIME " + NAME 
+        + " 🍀\n         THANK YOU 💖"; 
+        alert(alertmsg);
+    }
 }
 
-animate(); 
+// animate(); 
+// loop = requestAnimationFrame(animate);
+btn.addEventListener("click", function() { 
+    window.cancelAnimationFrame(loop); 
+    createNewGame(); 
+    animate();  
+})
