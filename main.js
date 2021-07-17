@@ -5,7 +5,8 @@ const ctx = canvas.getContext('2d');
 // canvas.height = window.innerHeight; 
 // canvas.width = window.innerWidth;
 
-let LIFE = 5; 
+
+let LIFE = 10; 
 let LEVEl = 1; 
 
 const brick = { 
@@ -16,10 +17,10 @@ const brick = {
     offSetLeft : 40,
     offSetTop : 30,
     marginTop : 40,
-    color : '#f5ce42'
+    color : '#4d4e52'
 }
 
-console.log(canvas.height,canvas.width); 
+// console.log(canvas.height,canvas.width); 
 
 let hue = 0; 
 let collisionParticles = []; 
@@ -40,19 +41,23 @@ class BRICK {
         ) { 
             ball.dx =  ball.dx; 
             ball.dy = - ball.dy; 
-            for (let i=0; i<5; i++) { 
+            for (let i=0; i < Math.min(LEVEl + 3, 6) ; i++) { 
                 collisionParticles.push(new Particle(this.x + brick.width/2, this.y + brick.height/2,10, ball.color)); 
             }
             ball.color = 'hsl('+hue+',100%,50%)'; 
             this.status = false; 
+            console.log(ctx.lineWidth); 
         }
     }
 
     draw() { 
-        ctx.fillStyle = ball.color; 
-        ctx.beginPath(); 
+        ctx.fillStyle = brick.color; 
         ctx.fillRect(this.x, this.y, brick.width, brick.height); 
-        ctx.closePath(); 
+    
+        ctx.lineWidth = 3; 
+
+        ctx.strokeStyle = '#fccf03' ;
+        ctx.strokeRect(this.x, this.y, brick.width, brick.height); 
     }   
 }
 
@@ -90,8 +95,12 @@ function handleBricks() {
     }
     if (next_level) { 
         LEVEl++; 
+        for (let i=0; i<collisionParticles.length;i++) { 
+            collisionParticles.splice(i,1);
+            i--; 
+        }
         brick.row ++; 
-        ball.speed += 2; 
+        ball.speed += 1; 
         createBricks(); 
         paddle.reset(); 
         ball.reset(); 
@@ -141,11 +150,18 @@ class PADDLE {
     }
 
     draw(){ 
-        ctx.fillStyle = 'white'; 
-        ctx.beginPath(); 
+        ctx.fillStyle = 'white';
+       
+        //ctx.beginPath(); 
         ctx.fillRect(this.x, this.y, this.width, this.height); 
-        ctx.fill(); 
-        ctx.closePath(); 
+        
+        // ctx.fill();   
+        ctx.lineWidth = 3; 
+
+        ctx.strokeStyle = '#fccf03' ;
+        ctx.strokeRect(this.x, this.y, this.width, this.height); 
+        //ctx.closePath(); 
+       
     }
 }
 let paddle = new PADDLE(canvas.width/2 - 35, canvas.height-10-10); 
@@ -185,8 +201,8 @@ class BALL {
         this.color = 'hsl('+hue+',100%,50%)'; 
         this.size = 8; 
         this.speed = speed; 
-        this.dx =3 * (Math.random() * 2 - 1); 
-        this.dy = -3; 
+        this.dx =2 * (Math.random() * 2 - 1); 
+        this.dy = -2; 
     }
 
     update() { 
@@ -240,7 +256,7 @@ class BALL {
     }
 
     reset() { 
-        ball = new BALL(paddle.x + paddle.width/2,paddle.y, ball.speed); 
+        ball = new BALL(paddle.x + paddle.width/2 + 10, paddle.y, ball.speed); 
     }
 
     draw() { 
@@ -269,8 +285,10 @@ class Particle {
         this.color = color; 
         this.weight = Math.random() * 4 + 1; 
         this.directionX = Math.random() * 5 - 1.5; 
-        this.speedX = Math.random() * 3 - 1.5; 
-        this.speedY = (Math.random() * this.speedX-1) - this.speedX; 
+        this.speedX = 0.7 * ( Math.random() * 2 - 1 ); 
+        this.speedY = -0.7 * ( Math.random() * 1 - 0 ); 
+        // this.speedX = Math.random() * 3 - 1.5; 
+        // this.speedY = (Math.random() * this.speedX-1) - this.speedX; 
     }
    
 
@@ -309,7 +327,10 @@ function handleCollision() {
                 ctx.fill(); 
             }
         }
-        if(collisionParticles[i].y < 0 || collisionParticles[i].x<0) {
+        if(collisionParticles[i].y < 0 
+            || collisionParticles[i].x < 0
+            || collisionParticles[i].x > canvas.height 
+            ) {
             collisionParticles.splice(i,1); 
             i--; 
         }
@@ -326,11 +347,18 @@ function showStats() {
     ctx.fillText('LEVEL : ' + LEVEl, 20, 30);
 }
 
+
+const Bg_img = new Image(); 
+Bg_img.src = 'https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/v462-n-130-textureidea_1.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=9465282a2b0a375f4f5b120d7bbad882'; 
+function drawBackground() { 
+    ctx.drawImage(Bg_img,0,0);
+}
+
 function animate() { 
     //ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle ='rgba(0,0,0,1)'; 
     ctx.fillRect(0,0,canvas.width,canvas.height); 
-    
+    drawBackground(); 
     ball.update(); 
     ball.draw(); 
 
@@ -339,7 +367,7 @@ function animate() {
     handleBricks();
     handleCollision(); 
     showStats();  
-    hue+=0.5; 
+    hue+=0.8; 
     if (LIFE > 0) requestAnimationFrame(animate);  
 }
 
