@@ -358,10 +358,10 @@ function handleCollision() {
 
 function showStats() { 
     ctx.fillStyle = '#fff'; 
-    ctx.font = "10px Arial"; 
-    ctx.fillText('LIFE REMAIN : ' + LIFE, 20, 30); 
-    ctx.fillText('LEVEL : ' + LEVEl, canvas.width/2 - 15, 30);
-    ctx.fillText('SCORE : ' + SCORE, canvas.width - 80, 30);
+    ctx.font = "13px Arial"; 
+    ctx.fillText('LIFE : ' + LIFE, 10, 30); 
+    ctx.fillText('LEVEL : ' + LEVEl, canvas.width/2 - 20, 30);
+    ctx.fillText('SCORE : ' + SCORE, canvas.width - 90, 30);
 }
 
 
