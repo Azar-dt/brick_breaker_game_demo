@@ -236,7 +236,7 @@ canvas.addEventListener("mousemove", function(e) {
     var canvasY = Math.round(e.clientY - cRect.top);         // positions to get make (0,0) the top left of the 
     paddle.x = canvasX - paddle.width/2; 
     paddle.y = canvasY - paddle.height/2; 
-    // if (paddle.x + paddle.width  > canvas.width ) paddle.x = canvas.width - paddle.width; 
+    if (paddle.x + paddle.width  > canvas.width ) paddle.x = canvas.width - paddle.width; 
     // if (paddle.x < 0) paddle.x = 0; 
     if (paddle.y + paddle.height > canvas.height) paddle.y = canvas.height - paddle.height; 
     if (paddle.y < 0) paddle.y = 0; 
@@ -260,11 +260,6 @@ class BALL {
 
          // collison with paddle 
          if (
-            // this.dy > 0 &&
-            // this.x >= paddle.x &&
-            // this.x <= paddle.x + paddle.width &&
-            // this.y + this.size  >= paddle.y 
-            // this.y + this.size <= paddle.y + paddle.height
             this.x + this.size > paddle.x &&
             this.x - this.size < paddle.x + paddle.width &&
             this.y - this.size < paddle.y + paddle.height &&
@@ -310,7 +305,7 @@ class BALL {
     }
 
     reset() { 
-        ball = new BALL(paddle.x + paddle.width/2 + 15 , paddle.y, ball.speed); 
+        ball = new BALL(paddle.x + paddle.width/2 + 10 , paddle.y , ball.speed); 
     }
 
     draw() { 
@@ -322,7 +317,7 @@ class BALL {
     }
 }
 
-let ball = new BALL(paddle.x + paddle.width/2,paddle.y,4); 
+let ball = new BALL(paddle.x + paddle.width/2,paddle.y , 4); 
 
 
 
@@ -417,7 +412,7 @@ function createNewGame() {
     let BALL_SPEED = document.getElementById('game_level').value; 
     // console.log(BALL_SPEED); 
     paddle = new PADDLE(canvas.width/2 - 35, canvas.height-10-10); 
-    ball = new BALL(paddle.x + paddle.width/2,paddle.y,BALL_SPEED); 
+    ball = new BALL(paddle.x + paddle.width/2,paddle.y ,BALL_SPEED); 
     drawBackground(); 
     clearSmallBall(); 
     createBricks(); 
